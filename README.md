@@ -1,6 +1,6 @@
 # Claude Agent SDK: Document Summarizer
 
-A minimal example for the article *Introduction to the Claude Agent SDK with Implemented Example to Summarize Text*.
+A minimal example for the article *Introduction to the Claude Agent SDK with Implementation Example*.
 
 The agent receives a file path, reads the file with the SDK's built-in `Read` tool, and returns a structured summary (key points plus a short summary). You write no tool-call handling: `query()` runs the whole agent loop.
 
@@ -61,20 +61,21 @@ The exact wording varies from run to run.
 The diagram below follows the layers and numbered steps of the Claude Agent SDK architecture figure (Agent Loop, Tools, Foundation). Each node names the part of this project where that step happens. Solid boxes are used by this example; dashed boxes are part of the SDK but not enabled here.
 
 ```mermaid
+%%{init: {'themeVariables': {'fontSize': '20px', 'fontFamily': 'Arial'}, 'flowchart': {'nodeSpacing': 25, 'rankSpacing': 40}}}%%
 flowchart TB
-    subgraph APP["Our code (index.ts / summarizeDocument)"]
-        direction LR
-        CLI["index.ts reads the file path from argv"] --> PROMPT["documentSummarizerPrompt(filePath)"]
-        PARSE["Regexes split the text into DocumentSummary"] --> OUT["index.ts prints Key Points and Summary"]
+    subgraph APP["This code"]
+        CLI["index.ts<br/>reads file path"]
+        PROMPT["Build prompt"]
+        PARSE["Regexes parse<br/>DocumentSummary"]
+        OUT["index.ts<br/>prints result"]
     end
 
-    subgraph LOOP["Claude Agent SDK: Agent Loop (run by query())"]
-        direction LR
-        S1["1. Receive request<br/>query({ prompt, options })"]
-        S2["2. Route to Model<br/>model from ANTHROPIC_MODEL"]
-        S3["3. Execute Tools<br/>only Read is allowed"]
-        S4["4. Update Context<br/>tool result added to the conversation"]
-        S5["5. Generate Response<br/>final text with Key Points and Summary"]
+    subgraph LOOP["Agent Loop (query)"]
+        S1["1. Receive request"]
+        S2["2. Route to Model"]
+        S3["3. Execute Tools"]
+        S4["4. Update Context"]
+        S5["5. Generate Response"]
         S1 --> S2
         S2 --> S3
         S3 --> S4
@@ -83,22 +84,24 @@ flowchart TB
     end
 
     subgraph TOOLS["Tools"]
-        direction LR
-        T1["Web Search<br/>not enabled"]
-        T2["Read Files<br/>allowedTools: Read"]
-        T3["Write Files<br/>not enabled"]
+        T1["Web Search<br/>(not enabled)"]
+        T2["Read Files<br/>(enabled)"]
+        T3["Write Files<br/>(not enabled)"]
+        T1 ~~~ T2 ~~~ T3
     end
 
     subgraph FOUND["Foundation"]
-        direction LR
         F1["Model Interface"]
-        F2["Message Handler<br/>for await over streamed messages"]
+        F2["Message Handler"]
         F3["Tool Manager"]
         F4["Context Manager"]
+        F1 ~~~ F2 ~~~ F3 ~~~ F4
     end
 
+    CLI --> PROMPT
     PROMPT --> S1
-    S5 -->|"result message, subtype success"| PARSE
+    S5 --> PARSE
+    PARSE --> OUT
     S3 --> T2
     S2 --- F1
     S5 --- F2
