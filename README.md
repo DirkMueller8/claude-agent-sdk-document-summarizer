@@ -60,57 +60,7 @@ The exact wording varies from run to run.
 
 The diagram below follows the layers and numbered steps of the Claude Agent SDK architecture figure (Agent Loop, Tools, Foundation). Each node names the part of this project where that step happens. Solid boxes are used by this example; dashed boxes are part of the SDK but not enabled here.
 
-```mermaid
-%%{init: {'themeVariables': {'fontSize': '20px', 'fontFamily': 'Arial'}, 'flowchart': {'nodeSpacing': 25, 'rankSpacing': 40}}}%%
-flowchart TB
-    subgraph APP["This code"]
-        CLI["index.ts<br/>reads file path"]
-        PROMPT["Build prompt"]
-        PARSE["Regexes parse<br/>DocumentSummary"]
-        OUT["index.ts<br/>prints result"]
-    end
-
-    subgraph LOOP["Agent Loop (query)"]
-        S1["1. Receive request"]
-        S2["2. Route to Model"]
-        S3["3. Execute Tools"]
-        S4["4. Update Context"]
-        S5["5. Generate Response"]
-        S1 --> S2
-        S2 --> S3
-        S3 --> S4
-        S4 -->|Loop| S1
-        S2 --> S5
-    end
-
-    subgraph TOOLS["Tools"]
-        T1["Web Search<br/>(not enabled)"]
-        T2["Read Files<br/>(enabled)"]
-        T3["Write Files<br/>(not enabled)"]
-        T1 ~~~ T2 ~~~ T3
-    end
-
-    subgraph FOUND["Foundation"]
-        F1["Model Interface"]
-        F2["Message Handler"]
-        F3["Tool Manager"]
-        F4["Context Manager"]
-        F1 ~~~ F2 ~~~ F3 ~~~ F4
-    end
-
-    CLI --> PROMPT
-    PROMPT --> S1
-    S5 --> PARSE
-    PARSE --> OUT
-    S3 --> T2
-    S2 --- F1
-    S5 --- F2
-    S3 --- F3
-    S4 --- F4
-
-    style T1 stroke-dasharray: 5 5
-    style T3 stroke-dasharray: 5 5
-```
+![Architecture of the document summarizer: Agent Loop, Tools and Foundation](docs/architecture.png)
 
 How the diagram maps to the code:
 
