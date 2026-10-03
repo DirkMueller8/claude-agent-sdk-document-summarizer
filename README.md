@@ -38,6 +38,7 @@ npm start -- ./documents/my-notes.md
 ## Expected Output
 
 ```
+Model: claude-sonnet-5-5
 Summarizing: ./documents/sample-document.md
 
 Key Points:
@@ -78,6 +79,7 @@ Because parsing relies on those exact headers, the prompt and the regexes are co
 ## Troubleshooting
 
 - `ANTHROPIC_MODEL is not set`: you have not created `.env`. Run `cp .env.example .env`.
+- Model not found: set `ANTHROPIC_MODEL` in `.env` to a model your API key can access (the default is `claude-sonnet-5-5`).
 - Authentication errors: check that `ANTHROPIC_API_KEY` is set correctly in `.env`.
 
 ## License

@@ -4,6 +4,7 @@ import { summarizeDocument } from "./document-summarizer.js";
 const filePath = process.argv[2] ?? "./documents/sample-document.md";
 
 async function main() {
+  console.log(`Model: ${process.env.ANTHROPIC_MODEL}`);
   console.log(`Summarizing: ${filePath}\n`);
 
   const result = await summarizeDocument(filePath);
